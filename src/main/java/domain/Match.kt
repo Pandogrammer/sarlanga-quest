@@ -15,13 +15,13 @@ class Match (val creatures: List<Creature>){
         activeCreature = FirstTurn().execute(creatures)
     }
 
-    fun creatureAction(creatureId: Int, objectiveId: Int) {
-        if (activeCreature == creatures[creatureId]) {
-            CreatureAction(actionDie).execute(creatures[creatureId], Attack(), creatures[objectiveId])
-            lastTeamTurn = activeCreature!!.team
+    fun creatureAction(objectiveId: Int) {
+        activeCreature?.let {
+            CreatureAction(actionDie).execute(it, Attack(), creatures[objectiveId])
+            lastTeamTurn = it.team
             if (WinnerValidation().execute(creatures) == null) {
                 activeCreature = NextTurn().execute(creatures, lastTeamTurn)
-                while(activeCreature == null){
+                while (activeCreature == null) {
                     RestingTurn().execute(creatures)
                     activeCreature = NextTurn().execute(creatures, lastTeamTurn)
                 }

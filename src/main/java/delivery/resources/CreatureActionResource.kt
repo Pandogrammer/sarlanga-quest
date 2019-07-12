@@ -13,11 +13,11 @@ class CreatureActionResource(private val matchs: Matchs) {
     @PostMapping
     fun creatureAction(@RequestBody request: ActionRequest){
         val match = matchs.find(request.matchId)
-        match?.creatureAction(request.creatureId, request.objectiveId)
+        match?.creatureAction(request.objectiveId)
     }
 
 }
 
-class ActionRequest(val matchId: Int, val creatureId: Int, val objectiveId: Int)
+class ActionRequest(val matchId: Int, val objectiveId: Int)
 
 

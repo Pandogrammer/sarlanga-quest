@@ -19,7 +19,7 @@ class WinnerValidationTest {
 
 
     @Test
-    fun `given all creatures are alive, there should no be a winner`(){
+    fun `given all creatures are alive, there should not be a winner`(){
         val winnerValidation = WinnerValidation()
         val creatures = listOf(Creature(initialHealth = 1, team = 1, dexterity = 3), Creature(initialHealth = 1, team = 2, dexterity = 3))
 

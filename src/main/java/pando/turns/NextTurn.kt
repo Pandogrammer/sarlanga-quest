@@ -15,7 +15,7 @@ class NextTurn {
     }
 
     private fun creaturesNeitherFatiguedNorDead(creatures: List<Creature>): List<Creature> {
-        return creatures.filter { it.fatigue == 0  && it.health != 0}
+        return creatures.filter { it.fatigue == 0  && it.health() != 0}
     }
 
 }

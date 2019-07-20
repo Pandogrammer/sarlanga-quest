@@ -19,7 +19,7 @@ class ActionDieTest {
         CreatureAction(actionDie).execute(a, Attack(), b)
 
         assertEquals(1, a.fatigue)
-        assertEquals(2, b.health)
+        assertEquals(2, b.health())
     }
 
 
@@ -33,7 +33,7 @@ class ActionDieTest {
         CreatureAction(actionDie).execute(a, Attack(), b)
 
         assertEquals(1, a.fatigue)
-        assertEquals(4, b.health)
+        assertEquals(4, b.health())
     }
 
 
@@ -47,7 +47,7 @@ class ActionDieTest {
         CreatureAction(actionDie).execute(a, Attack(), b)
 
         assertEquals(1, a.fatigue)
-        assertEquals(0, b.health)
+        assertEquals(0, b.health())
     }
 
 
@@ -61,7 +61,7 @@ class ActionDieTest {
         CreatureAction(actionDie).execute(a, Attack(), b)
 
         assertEquals(3, a.fatigue)
-        assertEquals(4, b.health)
+        assertEquals(4, b.health())
     }
 
 

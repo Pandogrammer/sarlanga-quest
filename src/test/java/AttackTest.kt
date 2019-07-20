@@ -11,11 +11,11 @@ class AttackTest {
         val attackValue = 2
         val aCreature = Creature(initialAttack = attackValue, speed = 10, dexterity = 3)
         val anotherCreature = Creature(initialHealth = 10, speed = 10, dexterity = 3)
-        val updatedHealth = anotherCreature.health - attackValue
+        val updatedHealth = anotherCreature.health() - attackValue
 
         attack.execute(aCreature, anotherCreature, false)
 
-        Assert.assertEquals(updatedHealth, anotherCreature.health)
+        Assert.assertEquals(updatedHealth, anotherCreature.health())
     }
 
     @Test
@@ -26,11 +26,11 @@ class AttackTest {
 
         val defenseValue = 1
         val anotherCreature = Creature(initialHealth = 10, defense = defenseValue, speed = 10, dexterity = 3)
-        val updatedHealth = anotherCreature.health - (attackValue - defenseValue)
+        val updatedHealth = anotherCreature.health() - (attackValue - defenseValue)
 
         attack.execute(aCreature, anotherCreature, false)
 
-        Assert.assertEquals(updatedHealth, anotherCreature.health)
+        Assert.assertEquals(updatedHealth, anotherCreature.health())
     }
 
     @Test
@@ -41,7 +41,7 @@ class AttackTest {
 
         attack.execute(attacker, objective, false)
 
-        Assert.assertEquals(0, objective.health)
+        Assert.assertEquals(0, objective.health())
     }
 
 }

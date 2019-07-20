@@ -10,9 +10,10 @@ open class Creature(val initialHealth: Int = 1,
                     val dexterity: Int = 0) {
 
     var fatigue: Int = initialFatigue
-    var health: Int = initialHealth
     var attack: Int = initialAttack
+    var damage: Int = 0
 
+    val health = { initialHealth - damage }
 }
 
 enum class CreatureCode {

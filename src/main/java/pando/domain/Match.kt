@@ -1,7 +1,5 @@
 package pando.domain
 
-import io.reactivex.rxkotlin.withLatestFrom
-import io.reactivex.subjects.PublishSubject
 import pando.actions.ActionDie
 import pando.actions.Attack
 import pando.creatures.Creature
@@ -17,16 +15,19 @@ class Match(playerCreatures: List<CreatureCode>,
             actionDie: ActionDie = ActionDie()){
 
     private val creatureAction = CreatureAction(actionDie)
-    val actions = creatureAction.executed
+    private val restingTurn = RestingTurn()
 
-    val deaths = actions.filter{ it.target.health == 0 }.map{ Death(it.creature, it.target)}
+    val actions = creatureAction.executed
+    val restingTurns = restingTurn.executed
+
+    val kills = actions.filter{ it.target.health() == 0 }.map{ Kill(it.creature)}
+    val deaths = actions.filter{ it.target.health() == 0 }.map { Death(it.target) }
 
     var activeCreature: Creature? = null
     val creatures = playerCreatures.map { spawnCreature(it, 1) } + opponentCreatures.map{ spawnCreature(it, 2) }
 
     //todas estas acciones se deberian inyectar/inlinear
     private val nextTurn = NextTurn()
-    private val restingTurn = RestingTurn()
     private val winnerValidation = WinnerValidation()
 
 
@@ -52,11 +53,12 @@ class Match(playerCreatures: List<CreatureCode>,
 
     private fun spawnCreature(code: CreatureCode, team: Int): Creature {
         return when(code){
-            EYE -> Eye(team, deaths)
-            SKELETON -> Skeleton(team)
+            EYE -> Eye(team, kills)
+            SKELETON -> Skeleton(team, restingTurns, deaths)
         }
     }
 
 }
 
-class Death(val killer: Creature, val killed: Creature)
+class Death(val creature: Creature)
+class Kill(val killer: Creature)

@@ -1,23 +1,33 @@
-import actions.ActionDie
-import actions.Attack
-import creatures.Creature
-import domain.Match
 import org.junit.Test
-import turns.CreatureAction
+import pando.creatures.CreatureCode
+import pando.domain.Match
 
 class TurnTest {
 
     @Test
     fun `given action then turn has action`(){
-        val creatures = listOf(Creature(speed = 2, team = 1), Creature(speed = 3, team = 2))
-        val match = Match(creatures)
-        match.turns.subscribe{ println("Speed: ${it.creature.speed} - Team: ${it.creature.team}") }
-        match.creatureAction(0)
-        match.creatureAction(0)
-        match.creatureAction(0)
-        match.creatureAction(0)
-        match.creatureAction(0)
-        match.creatureAction(0)
-        match.creatureAction(0)
+        val match = Match(listOf(CreatureCode.EYE), listOf(CreatureCode.SKELETON, CreatureCode.SKELETON, CreatureCode.SKELETON))
+        match.actions.subscribe{
+            println("Creature: ${it.creature} - Attack roll: ${it.roll}")
+        }
+
+        match.deaths.subscribe{
+            println("${it.killed} was killed by ${it.killer}")
+            println("Eye attack: ${match.creatures.get(0).attack}")
+        }
+
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
+        match.creatureAction(1)
     }
+
 }

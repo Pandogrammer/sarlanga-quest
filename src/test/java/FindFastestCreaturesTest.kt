@@ -1,5 +1,5 @@
-import actions.FindFastestCreatures
-import creatures.Creature
+import pando.actions.FindFastestCreatures
+import pando.creatures.Creature
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

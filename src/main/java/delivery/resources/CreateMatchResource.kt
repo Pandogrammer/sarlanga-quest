@@ -3,22 +3,19 @@ package delivery.resources
 import creatures.Creature
 import creatures.Eye
 import creatures.Skeleton
-import delivery.resources.CreatureCode.*
-import domain.Match
+import delivery.resources.CreatureCode.EYE
+import delivery.resources.CreatureCode.SKELETON
 import domain.Matchs
+import domain.MatchsService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import turns.FirstTurn
-import turns.NextTurn
-import turns.RestingTurn
-import turns.WinnerValidation
 
 
 @RestController
-@RequestMapping("create")
-class CreateMatchResource (private val matchs: Matchs){
+@RequestMapping("add")
+class CreateMatchResource (private val matchs: MatchsService){
 
     @PostMapping
     fun create(@RequestBody request: CreateMatchRequest) : CreateMatchResponse {
@@ -28,8 +25,7 @@ class CreateMatchResource (private val matchs: Matchs){
         val playerTeam = 1
         val playerCreatures = request.creatures.map { toCreature(it, playerTeam) }
 
-        val match = Match(aiCreatures + playerCreatures)
-        val matchId = matchs.add(match)
+        val matchId = matchs.create(aiCreatures + playerCreatures)
 
         return CreateMatchResponse(matchId)
     }

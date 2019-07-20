@@ -8,7 +8,6 @@ class CreatureAction(val die: ActionDie) {
 
     fun execute(creature: Creature, action: Action, target: Creature) {
         val roll = die.roll()
-        println("Rolled: "+roll)
         when(roll) {
             10 -> {
                 action.execute(creature, target, critical = true)

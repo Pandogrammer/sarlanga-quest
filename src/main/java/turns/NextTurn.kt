@@ -5,7 +5,7 @@ import creatures.Creature
 
 class NextTurn {
 
-    fun execute(creatures: List<Creature>, lastTurnTeam: Int): Creature? {
+    fun execute(creatures: List<Creature>, lastTurnTeam: Int?): Creature? {
         val posibleActiveCreatures = creaturesNeitherFatiguedNorDead(creatures)
         if (posibleActiveCreatures.isEmpty()) return null
 

@@ -15,6 +15,6 @@ class EyeTest {
 
         deaths.onNext(Kill(eye))
 
-        assertEquals(eye.attack, initialAttack + 1)
+        assertEquals(initialAttack + 1, eye.attack)
     }
 }

@@ -10,6 +10,7 @@ import pando.creatures.Eye
 import pando.creatures.Skeleton
 import pando.turns.*
 
+//esta clase pide refactor
 class Match(playerCreatures: List<CreatureCode>,
             opponentCreatures: List<CreatureCode>,
             actionDie: ActionDie = ActionDie()){
@@ -36,6 +37,7 @@ class Match(playerCreatures: List<CreatureCode>,
         activeCreature = FirstTurn().execute(creatures)
     }
 
+    //esto tambien pide refactor :)
     fun creatureAction(objectiveId: Int) {
         activeCreature?.let {
             val action = Attack()

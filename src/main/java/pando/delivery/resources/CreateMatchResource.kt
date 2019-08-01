@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-@RequestMapping("add")
+@RequestMapping("match")
 class CreateMatchResource (private val matchsService: MatchsService){
 
     @PostMapping
@@ -18,7 +18,7 @@ class CreateMatchResource (private val matchsService: MatchsService){
         val aiCreatures = listOf(CreatureCode.EYE, CreatureCode.SKELETON, CreatureCode.EYE)
 
         val playerTeam = 1
-        val playerCreatures = request.creatures
+        val playerCreatures = request.creatures.map { it.creature }
 
         val matchId = matchsService.create(playerCreatures, aiCreatures)
 
@@ -29,5 +29,7 @@ class CreateMatchResource (private val matchsService: MatchsService){
 
 class CreateMatchResponse(val matchId: Int)
 
-class CreateMatchRequest (val creatures: List<CreatureCode>)
+class CreateMatchRequest (val creatures: List<CreatureCreationRequest>)
+
+class CreatureCreationRequest(val creature: CreatureCode, val position: Int)
 

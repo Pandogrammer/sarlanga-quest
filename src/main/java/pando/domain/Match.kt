@@ -42,7 +42,7 @@ class Match(playerCreatures: List<CreatureCode>,
         activeCreature?.let {
             val action = Attack()
             creatureAction.execute(it, action, creatures[objectiveId])
-            if (winnerValidation.execute(creatures) == null) {
+            if (thereIsNoWinner()) {
                 activeCreature = nextTurn.execute(creatures, it.team)
                 while (activeCreature == null) {
                     restingTurn.execute(creatures)
@@ -50,6 +50,13 @@ class Match(playerCreatures: List<CreatureCode>,
                 }
             }
         }
+    }
+
+    private fun thereIsNoWinner(): Boolean {
+        val winner: Int? = winnerValidation.execute(creatures) ?: return true
+
+        println("Team $winner won!")
+        return false
     }
 
 
@@ -62,5 +69,3 @@ class Match(playerCreatures: List<CreatureCode>,
 
 }
 
-class Death(val creature: Creature)
-class Kill(val killer: Creature)

@@ -3,7 +3,13 @@ package pando.creatures
 import pando.domain.Kill
 import io.reactivex.Observable
 
-class Eye(team: Int = 0, deaths: Observable<Kill>) : Creature(initialHealth = 4, initialAttack = 2, speed = 2, team = team, dexterity = 3) {
+class Eye(team: Int = 0, deaths: Observable<Kill>) : Creature(
+        initialHealth = 4,
+        dexterity = 3,
+        initialAttack = 1,
+        defense = 0,
+        speed = 3
+) {
 
     init {
         deaths

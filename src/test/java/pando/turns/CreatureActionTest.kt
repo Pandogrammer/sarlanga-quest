@@ -1,7 +1,7 @@
 package pando.turns
 
 import pando.actions.ActionDie
-import pando.actions.TestAction
+import pando.test.TestAction
 import com.nhaarman.mockitokotlin2.mock
 import pando.creatures.Creature
 import org.junit.Test

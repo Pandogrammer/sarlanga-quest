@@ -16,7 +16,7 @@ class CreatureAction(private val die: ActionDie) {
                 creature.fatigue += action.fatigue
             }
             1 -> creature.fatigue = 3
-            in creature.dexterity .. 9 -> {
+            in creature.stats.dexterity .. 9 -> {
                 action.execute(creature, target)
                 creature.fatigue += action.fatigue
             }

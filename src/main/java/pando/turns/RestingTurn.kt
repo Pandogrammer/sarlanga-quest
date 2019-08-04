@@ -15,7 +15,7 @@ class RestingTurn {
 
     private fun restIfAlive(creature: Creature) {
         if (creature.health() > 0) {
-            creature.fatigue -= creature.speed
+            creature.fatigue -= creature.stats.speed
             if (creature.fatigue < 0) creature.fatigue = 0
         }
     }

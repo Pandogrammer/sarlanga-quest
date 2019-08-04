@@ -1,23 +1,34 @@
 package pando.creatures
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
+import pando.creatures.races.FluffyBehaviour
+import pando.creatures.races.Skeleton
+import pando.creatures.races.SkeletonBehaviour
 import pando.domain.Death
+import pando.domain.Kill
 import pando.domain.Rest
+import pando.test.CreatureBuilder
 import kotlin.test.assertEquals
 
 class SkeletonTest {
 
     @Test
     fun `given skeleton is dead it should revive in 7 turns`(){
-        val restingTurns = PublishSubject.create<Rest>()
+        val events: Events = mock()
+        val rest = PublishSubject.create<Rest>()
         val deaths = PublishSubject.create<Death>()
-        val skeleton = Skeleton(1, restingTurns, deaths)
+        whenever(events.rest).thenReturn(rest)
+        whenever(events.deaths).thenReturn(deaths)
+        val creature = CreatureBuilder().build()
+        val skeletonBehaviour = SkeletonBehaviour(creature, events)
 
-        deaths.onNext(Death(skeleton))
-        for (x in 1..10) restingTurns.onNext(Rest())
+        deaths.onNext(Death(creature))
+        for (x in 1..10) rest.onNext(Rest())
 
-        assertEquals(skeleton.initialHealth, skeleton.health())
-        assertEquals(0, skeleton.fatigue)
+        assertEquals(creature.stats.health, creature.health())
+        assertEquals(0, creature.fatigue)
     }
 }

@@ -1,22 +1,22 @@
 package pando.actions
 
 import pando.creatures.Creature
-import pando.creatures.Frog
-import pando.creatures.Golem
+import pando.creatures.races.Frog
+import pando.creatures.races.Golem
 import pando.creatures.Token
 
 class Attack(fatigue: Int = 1) : Action(fatigue) {
     override val melee: Boolean = true
 
     override fun execute(creature: Creature, target: Creature, critical: Boolean) {
-        var damage = (if(critical) creature.attack * 2 else creature.attack) - target.defense + calculateModifiers(creature, target)
+        var damage = (if(critical) creature.attack() * 2 else creature.attack()) - target.stats.defense + calculateModifiers(creature, target)
 
         if(damage < 1) damage = 1
 
-        target.damage += damage
+        target.damageCounters += damage
 
         if (target.health() < 0)
-            target.damage = target.initialHealth
+            target.damageCounters = target.stats.health
     }
 
     //lo voy a tener que sacar en algun momento, ya que no lo voy a poder comunicar al exterior

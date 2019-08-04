@@ -13,13 +13,13 @@ class WinnerValidation {
     }
 
     private fun allDeadFromTeamTwo(creatures: List<Creature>) =
-            creatures.filter { it.team == 2 }.all { it.initialHealth == 0 }
+            creatures.filter { it.team == 2 }.all { it.health() == 0 }
 
     private fun allDeadFromTeamOne(creatures: List<Creature>) =
-            creatures.filter { it.team == 1 }.all { it.initialHealth == 0 }
+            creatures.filter { it.team == 1 }.all { it.health() == 0 }
 
     private fun allAlive(creatures: List<Creature>): Boolean {
-        return creatures.none { it.initialHealth == 0 }
+        return creatures.none { it.health() == 0 }
     }
 
 }

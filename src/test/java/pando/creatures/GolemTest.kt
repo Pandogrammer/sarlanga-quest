@@ -6,7 +6,12 @@ import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 import pando.actions.ActionDie
 import pando.actions.Attack
+import pando.creatures.races.EyeBehaviour
+import pando.creatures.races.Golem
+import pando.creatures.races.GolemBehaviour
+import pando.domain.Kill
 import pando.domain.Rest
+import pando.test.CreatureBuilder
 import pando.turns.CreatureAction
 import pando.turns.RestingTurn
 import kotlin.test.assertEquals
@@ -14,34 +19,40 @@ import kotlin.test.assertEquals
 class GolemTest {
 
     @Test
-    fun `given golem has shield and defense, when damaged by 3 it receives 2 less damage`(){
-        val restingTurns = PublishSubject.create<Rest>()
-        val golem = Golem(restingTurns)
-        val initialHealth = golem.health()
-        val creature = Creature(initialAttack = 3)
+    fun `given golem has shield and defense, when damaged it receives 1 less damage`(){
+        val events: Events = mock()
+        val rest = PublishSubject.create<Rest>()
+        whenever(events.rest).thenReturn(rest)
+        val creature = CreatureBuilder().health(6).build()
+        val attacker = CreatureBuilder().attack(3).build()
+        val golemBehaviour = GolemBehaviour(creature, events)
         val action = Attack()
         val actionDie: ActionDie = mock()
         whenever(actionDie.roll()).thenReturn(9)
+        val initialHealth = creature.health()
 
-        CreatureAction(actionDie).execute(creature, action, golem)
+        CreatureAction(actionDie).execute(attacker, action, creature)
 
-        assertEquals(initialHealth - 1 , golem.health())
+        assertEquals(initialHealth - (attacker.attack() - 1), creature.health())
     }
     
     @Test
     fun `given golem doesnt have shield, when full rested, then shield recovers`(){
         val rest = RestingTurn()
         val restingTurns = rest.executed
+        val events: Events = mock()
+        whenever(events.rest).thenReturn(restingTurns)
+        val creature = CreatureBuilder().build()
+        val golemBehaviour = GolemBehaviour(creature, events)
 
-        val golem = Golem(restingTurns)
-        golem.removeTokens(Token.GOLEM, 1)
-        golem.fatigue = 2
+        creature.removeTokens(Token.GOLEM, 1)
+        creature.fatigue = 2
 
-        rest.execute(listOf(golem))
-        assertEquals(0, golem.getTokens(Token.GOLEM))
+        rest.execute(listOf(creature))
+        assertEquals(0, creature.getTokens(Token.GOLEM))
 
-        rest.execute(listOf(golem))
-        assertEquals(1, golem.getTokens(Token.GOLEM))
+        rest.execute(listOf(creature))
+        assertEquals(1, creature.getTokens(Token.GOLEM))
     }
 }
 

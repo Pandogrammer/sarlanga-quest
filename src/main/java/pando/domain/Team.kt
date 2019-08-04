@@ -8,9 +8,9 @@ class Team(val essence: Int = 0) {
     var usedEssence = 0
 
     fun addCreature(creature: Creature, position: Position) {
-        if (positionIsEmpty(position) && positionIsValid(position) && essenceIsNotExceeded(creature.essence)) {
+        if (positionIsEmpty(position) && positionIsValid(position) && essenceIsNotExceeded(creature.stats.essence)) {
             creatures[position] = creature
-            usedEssence += creature.essence
+            usedEssence += creature.stats.essence
         }
     }
 

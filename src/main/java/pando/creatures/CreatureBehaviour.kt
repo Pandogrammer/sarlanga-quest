@@ -1,3 +1,6 @@
 package pando.creatures
 
-interface CreatureBehaviour
+interface CreatureBehaviour {
+    val creature: Creature
+    val events: Events
+}

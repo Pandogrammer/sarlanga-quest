@@ -1,17 +1,19 @@
 package pando.creatures
 
-open class Creature(val stats: CreatureStats,
-                    val behaviour: CreatureBehaviour,
-                    val position: Position,
-                    val team: Int) {
+abstract class Creature(val stats: CreatureStats,
+                        val position: Position,
+                        val team: Int) {
+
+    abstract val behaviour : CreatureBehaviour?
+
+    var fatigue: Int = 0
+    var damageCounters: Int = 0
+    var attackBonus: Int = 0
+
+    val health = { stats.health - damageCounters }
+    val attack = { stats.attack + attackBonus }
 
     val tokens = HashMap<Token, Int>()
-
-    var fatigue: Int = initialFatigue
-    var attack: Int = initialAttack
-    var damage: Int = 0
-
-    val health = { initialHealth - damage }
 
     fun addTokens(token: Token, quantity: Int) {
         if(!tokens.containsKey(token))

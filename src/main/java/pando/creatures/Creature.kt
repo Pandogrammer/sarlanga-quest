@@ -7,7 +7,8 @@ open class Creature(val initialHealth: Int = 1,
                     val speed: Int = 0,
                     val position: Position = Position(0, 0),
                     val team: Int = 0,
-                    val dexterity: Int = 0) {
+                    val dexterity: Int = 0,
+                    val essence: Int = 0) {
 
     val tokens = HashMap<Token, Int>()
 

@@ -5,6 +5,9 @@ abstract class Creature(val stats: CreatureStats,
                         val team: Int) {
 
     abstract val behaviour : CreatureBehaviour?
+    override fun toString(): String {
+        return "[T$team]${javaClass.simpleName}[${position.column}-${position.line}]"
+    }
 
     var fatigue: Int = 0
     var damageCounters: Int = 0

@@ -5,6 +5,7 @@ import pando.domain.MatchsService
 import pando.domain.Matchs
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import pando.domain.CreatureCards
 import springfox.documentation.builders.PathSelectors
 import springfox.documentation.builders.RequestHandlerSelectors
 import springfox.documentation.spi.DocumentationType
@@ -24,6 +25,11 @@ class Context {
     @Bean
     fun matchs(): Matchs {
         return InMemoryMatchs()
+    }
+
+    @Bean
+    fun creatureCards(): CreatureCards {
+        return CreatureCards()
     }
 
 }

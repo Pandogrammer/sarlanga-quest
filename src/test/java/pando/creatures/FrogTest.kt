@@ -7,11 +7,9 @@ import org.junit.Test
 import pando.actions.Action
 import pando.actions.ActionDie
 import pando.actions.Attack
-import pando.creatures.races.FluffyBehaviour
-import pando.creatures.races.Frog
 import pando.creatures.races.FrogBehaviour
 import pando.domain.Damage
-import pando.domain.Kill
+import pando.domain.Events
 import pando.test.CreatureBuilder
 import pando.turns.CreatureAction
 import kotlin.test.assertEquals

@@ -4,14 +4,25 @@ import pando.creatures.Creature
 import pando.domain.Match
 import pando.domain.Matchs
 import org.springframework.web.bind.annotation.*
+import pando.actions.Attack
 
 @RestController
-@RequestMapping("match-status")
-class MatchStatusResource(private val matchs: Matchs) {
+@RequestMapping("match")
+class MatchResource(private val matchs: Matchs) {
 
     @GetMapping("{matchId}")
     fun status(@PathVariable matchId: Int): MatchStatusResponse? {
         return matchs.find(matchId)?.let { MatchStatusResponse(it) }
+    }
+
+    @PostMapping
+    fun creatureAction(@RequestBody request: ActionRequest){
+        val match = matchs.find(request.matchId)
+        val action = Attack()
+        match?.let{
+            if(it.validate(action, request.objectiveId))
+                it.actionExecution(Attack(), request.objectiveId)
+        }
     }
 
 }
@@ -33,6 +44,6 @@ class MatchStatusResponse(match: Match){
 class CreatureStatusResponse(creature: Creature) {
     val health = creature.health
     val fatigue = creature.fatigue
-
 }
 
+class ActionRequest(val matchId: Int, val objectiveId: Int)

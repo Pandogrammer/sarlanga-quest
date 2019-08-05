@@ -4,6 +4,7 @@ import pando.actions.Action
 import pando.actions.ActionDie
 import pando.creatures.Creature
 import io.reactivex.subjects.PublishSubject
+import pando.domain.ActionExecution
 
 class CreatureAction(private val die: ActionDie) {
     val executed = PublishSubject.create<ActionExecution>()
@@ -27,4 +28,3 @@ class CreatureAction(private val die: ActionDie) {
     }
 }
 
-class ActionExecution(val creature: Creature, val action: Action, val target: Creature, val roll: Int)

@@ -1,6 +1,7 @@
 package pando.creatures.races
 
 import pando.creatures.*
+import pando.domain.Events
 
 
 class Fluffy(events: Events, position: Position, team: Int) : Creature(FluffyStats(), position, team) {

@@ -4,11 +4,9 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
-import pando.creatures.races.FluffyBehaviour
-import pando.creatures.races.Skeleton
 import pando.creatures.races.SkeletonBehaviour
 import pando.domain.Death
-import pando.domain.Kill
+import pando.domain.Events
 import pando.domain.Rest
 import pando.test.CreatureBuilder
 import kotlin.test.assertEquals

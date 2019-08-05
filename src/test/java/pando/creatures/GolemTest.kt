@@ -6,10 +6,8 @@ import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 import pando.actions.ActionDie
 import pando.actions.Attack
-import pando.creatures.races.EyeBehaviour
-import pando.creatures.races.Golem
 import pando.creatures.races.GolemBehaviour
-import pando.domain.Kill
+import pando.domain.Events
 import pando.domain.Rest
 import pando.test.CreatureBuilder
 import pando.turns.CreatureAction

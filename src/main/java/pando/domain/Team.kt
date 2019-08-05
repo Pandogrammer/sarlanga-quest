@@ -1,20 +1,20 @@
 package pando.domain
 
-import pando.creatures.Creature
 import pando.creatures.Position
+import pando.creatures.cards.CreatureCard
 
 class Team(val essence: Int = 0) {
-    val creatures = HashMap<Position, Creature>()
+    val creatures = HashMap<Position, CreatureCard>()
     var usedEssence = 0
 
-    fun addCreature(creature: Creature, position: Position) {
-        if (positionIsEmpty(position) && positionIsValid(position) && essenceIsNotExceeded(creature.stats.essence)) {
-            creatures[position] = creature
-            usedEssence += creature.stats.essence
+    fun addCreature(position: Position, creatureCard: CreatureCard) {
+        if (positionIsEmpty(position) && positionIsValid(position) && essenceIsNotExceeded(creatureCard.stats.essence)) {
+            creatures[position] = creatureCard
+            usedEssence += creatureCard.stats.essence
         }
     }
 
-    fun getCreature(position: Position): Creature? {
+    fun getCreature(position: Position): CreatureCard? {
         return creatures[position]
     }
 
@@ -22,10 +22,10 @@ class Team(val essence: Int = 0) {
         creatures.remove(position)
     }
 
-    private fun positionIsEmpty(position: Position) = creatures[position] == null
+    fun positionIsEmpty(position: Position) = creatures[position] == null
 
-    private fun positionIsValid(position: Position): Boolean = position.column in 1..2 && position.line in 1..2
+    fun positionIsValid(position: Position): Boolean = position.column in 1..2 && position.line in 1..2
 
-    private fun essenceIsNotExceeded(creatureEssence: Int): Boolean = usedEssence + creatureEssence <= essence
+    fun essenceIsNotExceeded(creatureEssence: Int): Boolean = usedEssence + creatureEssence <= essence
 
 }

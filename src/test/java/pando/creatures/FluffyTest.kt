@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 import pando.creatures.races.FluffyBehaviour
+import pando.domain.Events
 import pando.domain.Kill
 import pando.test.CreatureBuilder
 import kotlin.test.assertEquals

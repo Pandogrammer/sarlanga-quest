@@ -7,7 +7,7 @@ import pando.test.CreatureBuilder
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class BlockTest {
+class HasBlockersTest {
 
     @Test
     fun `given a creature is in front of another, then it has blockers`(){

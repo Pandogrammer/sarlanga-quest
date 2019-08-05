@@ -1,6 +1,7 @@
 package pando.creatures.races
 
 import pando.creatures.*
+import pando.domain.Events
 
 class Frog(events: Events, position: Position, team: Int) : Creature(FrogStats(), position, team) {
     override val behaviour = FrogBehaviour(this, events)

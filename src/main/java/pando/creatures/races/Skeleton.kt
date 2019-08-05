@@ -3,6 +3,7 @@ package pando.creatures.races
 import io.reactivex.Observable
 import pando.creatures.*
 import pando.domain.Death
+import pando.domain.Events
 import pando.domain.Rest
 
 class Skeleton(events: Events, position: Position, team: Int) : Creature(SkeletonStats(), position, team) {

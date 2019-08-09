@@ -11,7 +11,7 @@ class EyeStats : CreatureStats(4, 1, 0, 3, 3, 1)
 
 class EyeBehaviour(override val creature: Creature, override val events: Events) : CreatureBehaviour {
     init {
-        events.kills.filter{ it.killer == creature }
+        val damageBoost = events.kills.filter{ it.killer == creature }
                     .subscribe{ creature.attackBonus++ }
     }
 }

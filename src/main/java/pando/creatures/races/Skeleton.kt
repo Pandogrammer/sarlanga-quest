@@ -14,7 +14,7 @@ class SkeletonStats : CreatureStats(6, 2, 0, 1, 4, 1)
 
 class SkeletonBehaviour(override val creature: Creature, override val events: Events) : CreatureBehaviour {
     init {
-        events.deaths.filter { it.creature == creature }.subscribe{
+        val resurrection = events.deaths.filter { it.creature == creature }.subscribe{
             creature.fatigue = 7
             events.rest.takeUntil{ creature.fatigue == 0 }.subscribe {
                 creature.fatigue -= 1

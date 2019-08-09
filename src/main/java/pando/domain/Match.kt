@@ -24,8 +24,8 @@ class Match(playerCreatures: Map<Position, CreatureCode>,
 
     private val actionsExecuted = creatureAction.executed
     private val rests = restingTurn.executed
-    private val damage = PublishSubject.create<Damage>()
-    private val kills = actionsExecuted.filter { it.target.health() == 0 }.map { Kill(it.creature) }
+    private val damage = actionsExecuted.filter { it.roll >= it.actor.stats.dexterity }.map { DamageEvent(it.actor, it.action, it.target) } //asco
+    private val kills = actionsExecuted.filter { it.target.health() == 0 }.map { Kill(it.actor) }
     private val deaths = actionsExecuted.filter { it.target.health() == 0 }.map { Death(it.target) }
 
     val messages = PublishSubject.create<String>()
@@ -72,7 +72,7 @@ class Match(playerCreatures: Map<Position, CreatureCode>,
     private fun messagesSubscriptions() {
         messages.subscribe{ println(it) }
 
-        actionsExecuted.subscribe { println("${it.creature} executed ${it.action.javaClass.simpleName} on ${it.target}, rolling: ${it.roll}")}
+        actionsExecuted.subscribe { println("${it.actor} executed ${it.action.javaClass.simpleName} on ${it.target}, rolling: ${it.roll}")}
 
         deaths.subscribe { println("${it.creature} died")}
 
@@ -140,7 +140,7 @@ class Match(playerCreatures: Map<Position, CreatureCode>,
 //hecho solo para poder mockear. -_-
 class MatchEvents(override val actions: Observable<ActionExecution>,
                   override val rest: Observable<Rest>,
-                  override val damage: Observable<Damage>,
+                  override val damageEvent: Observable<DamageEvent>,
                   override val kills: Observable<Kill>,
                   override val deaths: Observable<Death>) : Events
 

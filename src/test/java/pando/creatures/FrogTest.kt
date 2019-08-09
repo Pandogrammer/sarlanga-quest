@@ -8,7 +8,7 @@ import pando.actions.Action
 import pando.actions.ActionDie
 import pando.actions.Attack
 import pando.creatures.races.FrogBehaviour
-import pando.domain.Damage
+import pando.domain.DamageEvent
 import pando.domain.Events
 import pando.test.CreatureBuilder
 import pando.turns.CreatureAction
@@ -19,30 +19,33 @@ class FrogTest {
     @Test
     fun `given frog receives melee damage, the attacker receives one frog poison token`(){
         val events: Events = mock()
-        val damage = PublishSubject.create<Damage>()
-        whenever(events.damage).thenReturn(damage)
-        val creature = CreatureBuilder().build()
+        val damage = PublishSubject.create<DamageEvent>()
+        whenever(events.damageEvent).thenReturn(damage)
+        val frog = CreatureBuilder().build()
         val anotherCreature = CreatureBuilder().build()
-        val frogBehaviour = FrogBehaviour(creature, events)
+        val frogBehaviour = FrogBehaviour(frog, events)
         val action : Action = mock()
         whenever(action.melee).thenReturn(true)
 
-        damage.onNext(Damage(anotherCreature, action, creature))
+        damage.onNext(DamageEvent(anotherCreature, action, frog))
 
-        assertEquals(1, creature.tokens[Token.FROG])
+        assertEquals(1, anotherCreature.tokens[Token.FROG])
     }
 
     @Test
-    fun `given frog attacks a target with frog tokens, it deals more damage`(){
-        val creature = CreatureBuilder().attack(2).build()
-        val anotherCreature = CreatureBuilder().health(5).build()
-        anotherCreature.addTokens(Token.FROG, 1)
-        val actionDie : ActionDie = mock()
-        whenever(actionDie.roll()).thenReturn(9)
+    fun `given frog attacks a target with frog tokens, it deals more damage and tokens are consumed`(){
+        val events: Events = mock()
+        val damage = PublishSubject.create<DamageEvent>()
+        whenever(events.damageEvent).thenReturn(damage)
+        val frog = CreatureBuilder().build()
+        val frogBehaviour = FrogBehaviour(frog, events)
+        val anotherCreature = CreatureBuilder().health(4).build()
+        anotherCreature.addTokens(Token.FROG, 2)
 
-        CreatureAction(actionDie).execute(creature, Attack(), anotherCreature)
+        damage.onNext(DamageEvent(frog, Attack(), anotherCreature))
 
-        assertEquals(1, creature.health())
+        assertEquals(2, anotherCreature.health())
+        assertEquals(0, anotherCreature.getTokens(Token.FROG))
     }
 }
 

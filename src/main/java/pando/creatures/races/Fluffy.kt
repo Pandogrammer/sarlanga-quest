@@ -14,7 +14,7 @@ class FluffyBehaviour(override val creature: Creature, override val events: Even
     var killCounter = 0
 
     init{
-        events.kills.filter { it.killer == creature }.subscribe {
+        val healing = events.kills.filter { it.killer == creature }.subscribe {
             killCounter++
             creature.damageCounters -= killCounter
 

@@ -7,7 +7,6 @@ import pando.creatures.Position
 import pando.creatures.cards.CreatureCard
 import pando.domain.CreatureCards
 import pando.domain.MatchsService
-import pando.domain.Team
 
 @RestController
 @RequestMapping("team")
@@ -16,61 +15,67 @@ class TeamCreationResource(private val cards: CreatureCards,
 
     private val creatureCodeMapper = CreatureCodeMapper()
     private final val essence = 4
-    val team = Team(essence)
-
-    @GetMapping
-    fun chosenCreatures(): TeamResponse {
-        return TeamResponse(team.usedEssence, essence, team.creatures)
-    }
 
     @GetMapping("available")
     fun availableCreatures(): AvailableCreaturesResponse{
         return AvailableCreaturesResponse(essence, cards.creatures)
     }
 
-    @GetMapping("confirm")
-    fun confirmTeam(): Response {
-        if(team.creatures.isEmpty())
+    @PostMapping
+    fun confirmTeam(@RequestBody request: TeamRequest): Response {
+        if(request.creatures.isEmpty())
             return Response("El equipo esta vacío.")
+
+        val team = Team(essence)
+
+        request.creatures.forEach {
+            addCreature(team, it.position, it.creatureCode)?.let { response -> return response }
+        }
 
         matchsService.create(team.creatures.map { it.key to it.value.creatureCode }.toMap())
         return Response("Equipo confirmado.")
     }
 
-    @PostMapping
-    fun addCreature(@RequestBody request: AddCreatureRequest): Response {
-        val creatureCard = creatureCodeMapper.toCard(request.creatureCode)
+    fun addCreature(team: Team, position: Position, creatureCode: CreatureCode): Response? {
+        val creatureCard = creatureCodeMapper.toCard(creatureCode)
 
-        if(!team.positionIsValid(request.position))
+        if(!team.positionIsValid(position))
             return Response("Posicion inválida.")
-        if(!team.positionIsEmpty(request.position))
+        if(!team.positionIsEmpty(position))
             return Response("Posicion ocupada.")
         if(!cards.creatures.contains(creatureCard))
             return Response("La criatura no está disponible.")
         if(!team.essenceIsNotExceeded(creatureCard.stats.essence))
             return Response("La esencia de la criatura excede la disponible.")
 
-        team.addCreature(request.position, creatureCard)
-
-        return Response("Criatura agregada.")
+        team.addCreature(position, creatureCard)
+        return null
     }
 
-    @DeleteMapping
-    fun removeCreature(@RequestBody request: RemoveCreatureRequest): Response {
-        if(team.getCreature(request.position) == null)
-            return Response("Posicion vacía.")
-
-        team.removeCreature(request.position)
-
-        return Response("Criatura removida.")
-    }
 }
 
-class TeamResponse (val usedEssence: Int, val maxEssence: Int, val creatures: Map<Position, CreatureCard>)
+class Team(val essence: Int = 0) {
+    val creatures = HashMap<Position, CreatureCard>()
+    var usedEssence = 0
 
-class RemoveCreatureRequest(val position: Position)
+    fun addCreature(position: Position, creatureCard: CreatureCard) {
+        if (positionIsEmpty(position) && positionIsValid(position) && essenceIsNotExceeded(creatureCard.stats.essence)) {
+            creatures[position] = creatureCard
+            usedEssence += creatureCard.stats.essence
+        }
+    }
 
-class AddCreatureRequest (val position: Position, val creatureCode: CreatureCode)
+    fun positionIsEmpty(position: Position) = creatures[position] == null
+
+    fun positionIsValid(position: Position): Boolean = position.column in 1..2 && position.line in 1..2
+
+    fun essenceIsNotExceeded(creatureEssence: Int): Boolean = usedEssence + creatureEssence <= essence
+
+}
+
+class TeamRequest (val creatures: List<CreatureRequest>)
+
+class CreatureRequest(val position: Position, val creatureCode: CreatureCode)
 
 class AvailableCreaturesResponse (val essence: Int, val creatures: List<CreatureCard>)
 

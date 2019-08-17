@@ -5,6 +5,7 @@ import pando.domain.Match
 import pando.domain.Matchs
 import org.springframework.web.bind.annotation.*
 import pando.actions.Attack
+import java.lang.RuntimeException
 
 @RestController
 @RequestMapping("match")
@@ -16,12 +17,14 @@ class MatchResource(private val matchs: Matchs) {
     }
 
     @PostMapping
-    fun creatureAction(@RequestBody request: ActionRequest){
+    fun creatureAction(@RequestBody request: ActionRequest) {
         val match = matchs.find(request.matchId)
         val action = Attack()
         match?.let{
-            if(it.validate(action, request.objectiveId))
-                it.actionExecution(Attack(), request.objectiveId)
+            if(!it.validate(action, request.objectiveId))
+                throw RuntimeException("Accion invalida.")
+
+            it.actionExecution(Attack(), request.objectiveId)
         }
     }
 

@@ -22,18 +22,18 @@ class TeamCreationResource(private val cards: CreatureCards,
     }
 
     @PostMapping
-    fun confirmTeam(@RequestBody request: TeamRequest): Response {
+    fun confirmTeam(@RequestBody request: TeamRequest): TeamConfirmationResponse {
         if(request.creatures.isEmpty())
-            return Response("El equipo esta vacío.")
+            throw RuntimeException("El equipo esta vacío.")
 
         val team = Team(essence)
 
         request.creatures.forEach {
-            addCreature(team, it.position, it.creatureCode)?.let { response -> return response }
+            addCreature(team, it.position, it.creatureCode)?.let { response -> throw RuntimeException(response.message) }
         }
 
-        matchsService.create(team.creatures.map { it.key to it.value.creatureCode }.toMap())
-        return Response("Equipo confirmado.")
+        var matchId = matchsService.create(team.creatures.map { it.key to it.value.creatureCode }.toMap())
+        return TeamConfirmationResponse(matchId)
     }
 
     fun addCreature(team: Team, position: Position, creatureCode: CreatureCode): Response? {
@@ -80,3 +80,5 @@ class CreatureRequest(val position: Position, val creatureCode: CreatureCode)
 class AvailableCreaturesResponse (val essence: Int, val creatures: List<CreatureCard>)
 
 class Response (val message: String)
+
+class TeamConfirmationResponse(val matchId: Int)

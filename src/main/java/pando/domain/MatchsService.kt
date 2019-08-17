@@ -5,10 +5,10 @@ import pando.creatures.Position
 
 class MatchsService(private val matchs: Matchs) {
 
-    val iaCreatures = {
-        mapOf(  Position(1,1) to CreatureCode.EYE,
+    private val iaCreatures = {
+        mapOf(Position(1, 1) to CreatureCode.EYE,
                 Position(2, 1) to CreatureCode.SKELETON,
-                Position(2, 2) to CreatureCode.EYE )
+                Position(2, 2) to CreatureCode.EYE)
     }
 
     fun create(playerCreatures: Map<Position, CreatureCode>): Int {
@@ -16,6 +16,10 @@ class MatchsService(private val matchs: Matchs) {
         match.start()
         val matchId = matchs.add(match)
         return matchId
+    }
+
+    fun get(matchId: Int): Match? {
+        return matchs.find(matchId)
     }
 
 }

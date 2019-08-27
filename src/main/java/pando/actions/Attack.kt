@@ -1,18 +1,13 @@
 package pando.actions
 
-import pando.creatures.Creature
-import pando.creatures.races.Frog
-import pando.creatures.races.Golem
-import pando.creatures.Token
-import pando.creatures.races.FrogBehaviour
-import pando.creatures.races.GolemBehaviour
+import pando.creatures.SpawnedCreature
 
 class Attack(fatigue: Int = 1) : Action(fatigue) {
     override val melee: Boolean = true
 
     //esto deberia transformarse en Damage, y que la accion invoque el efecto
-    override fun execute(creature: Creature, target: Creature, critical: Boolean) {
-        var damage = (if(critical) creature.attack() * 2 else creature.attack()) - target.stats.defense
+    override fun execute(spawnedCreature: SpawnedCreature, target: SpawnedCreature, critical: Boolean) {
+        var damage = (if(critical) spawnedCreature.attack() * 2 else spawnedCreature.attack()) - target.stats.defense
 
         if(damage < 1) damage = 1
 

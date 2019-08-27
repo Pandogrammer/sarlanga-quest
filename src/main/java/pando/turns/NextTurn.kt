@@ -1,12 +1,12 @@
 package pando.turns
 
 import pando.actions.FindFastestCreatures
-import pando.creatures.Creature
+import pando.creatures.SpawnedCreature
 
 class NextTurn {
 
-    fun execute(creatures: List<Creature>, lastTurnTeam: Int?): Creature? {
-        val posibleActiveCreatures = creaturesNeitherFatiguedNorDead(creatures)
+    fun execute(spawnedCreatures: List<SpawnedCreature>, lastTurnTeam: Int?): SpawnedCreature? {
+        val posibleActiveCreatures = creaturesNeitherFatiguedNorDead(spawnedCreatures)
         if (posibleActiveCreatures.isEmpty()) return null
 
         val opposingTeamCreatures = posibleActiveCreatures.filter { it.team != lastTurnTeam }
@@ -14,8 +14,8 @@ class NextTurn {
         else return FindFastestCreatures().execute(posibleActiveCreatures)[0]
     }
 
-    private fun creaturesNeitherFatiguedNorDead(creatures: List<Creature>): List<Creature> {
-        return creatures.filter { it.fatigue == 0  && it.health() != 0}
+    private fun creaturesNeitherFatiguedNorDead(spawnedCreatures: List<SpawnedCreature>): List<SpawnedCreature> {
+        return spawnedCreatures.filter { it.fatigue == 0  && it.health() != 0}
     }
 
 }

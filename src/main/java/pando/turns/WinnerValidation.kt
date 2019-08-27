@@ -1,25 +1,25 @@
 package pando.turns
 
-import pando.creatures.Creature
+import pando.creatures.SpawnedCreature
 
 class WinnerValidation {
-    fun execute(creatures: List<Creature>): Int? {
-        if (allAlive(creatures)) return null
+    fun execute(spawnedCreatures: List<SpawnedCreature>): Int? {
+        if (allAlive(spawnedCreatures)) return null
 
-        if (allDeadFromTeamOne(creatures)) return 2
-        if (allDeadFromTeamTwo(creatures)) return 1
+        if (allDeadFromTeamOne(spawnedCreatures)) return 2
+        if (allDeadFromTeamTwo(spawnedCreatures)) return 1
 
         return null
     }
 
-    private fun allDeadFromTeamTwo(creatures: List<Creature>) =
-            creatures.filter { it.team == 2 }.all { it.health() == 0 }
+    private fun allDeadFromTeamTwo(spawnedCreatures: List<SpawnedCreature>) =
+            spawnedCreatures.filter { it.team == 2 }.all { it.health() == 0 }
 
-    private fun allDeadFromTeamOne(creatures: List<Creature>) =
-            creatures.filter { it.team == 1 }.all { it.health() == 0 }
+    private fun allDeadFromTeamOne(spawnedCreatures: List<SpawnedCreature>) =
+            spawnedCreatures.filter { it.team == 1 }.all { it.health() == 0 }
 
-    private fun allAlive(creatures: List<Creature>): Boolean {
-        return creatures.none { it.health() == 0 }
+    private fun allAlive(spawnedCreatures: List<SpawnedCreature>): Boolean {
+        return spawnedCreatures.none { it.health() == 0 }
     }
 
 }

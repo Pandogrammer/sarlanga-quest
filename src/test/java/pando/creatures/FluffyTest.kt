@@ -18,7 +18,7 @@ class FluffyTest {
         val kills = PublishSubject.create<Kill>()
         whenever(events.kills).thenReturn(kills)
         val creature = CreatureBuilder().build()
-        val fluffyBehaviour = FluffyBehaviour(creature, events)
+        val fluffyBehaviour = FluffyBehaviour().attachTo(creature, events)
         creature.damageCounters = 4
         val initialHealth = creature.health()
 
@@ -33,7 +33,7 @@ class FluffyTest {
         val kills = PublishSubject.create<Kill>()
         whenever(events.kills).thenReturn(kills)
         val creature = CreatureBuilder().build()
-        val fluffyBehaviour = FluffyBehaviour(creature, events)
+        val fluffyBehaviour = FluffyBehaviour().attachTo(creature, events)
         creature.damageCounters = 4
         val initialHealth = creature.health()
 
@@ -49,7 +49,8 @@ class FluffyTest {
         val kills = PublishSubject.create<Kill>()
         whenever(events.kills).thenReturn(kills)
         val creature = CreatureBuilder().build()
-        val fluffyBehaviour = FluffyBehaviour(creature, events)
+        val fluffyBehaviour = FluffyBehaviour()
+        fluffyBehaviour.attachTo(creature, events)
         val initialHealth = creature.health()
 
         kills.onNext(Kill(creature))

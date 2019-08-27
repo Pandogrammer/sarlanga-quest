@@ -21,7 +21,7 @@ class SkeletonTest {
         whenever(events.rest).thenReturn(rest)
         whenever(events.deaths).thenReturn(deaths)
         val creature = CreatureBuilder().build()
-        val skeletonBehaviour = SkeletonBehaviour(creature, events)
+        val skeletonBehaviour = SkeletonBehaviour().attachTo(creature, events)
 
         deaths.onNext(Death(creature))
         for (x in 1..10) rest.onNext(Rest())

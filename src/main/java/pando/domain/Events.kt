@@ -2,7 +2,7 @@ package pando.domain
 
 import io.reactivex.Observable
 import pando.actions.Action
-import pando.creatures.Creature
+import pando.creatures.SpawnedCreature
 
 
 interface Events {
@@ -13,8 +13,8 @@ interface Events {
     val deaths: Observable<Death>
 }
 
-class ActionExecution(val actor: Creature, val action: Action, val target: Creature, val roll: Int)
-class Death(val creature: Creature)
-class Kill(val killer: Creature)
-class DamageEvent(val actor: Creature, val action: Action, val target: Creature)
+class ActionExecution(val actor: SpawnedCreature, val action: Action, val target: SpawnedCreature, val roll: Int)
+class Death(val spawnedCreature: SpawnedCreature)
+class Kill(val killer: SpawnedCreature)
+class DamageEvent(val actor: SpawnedCreature, val action: Action, val target: SpawnedCreature)
 class Rest

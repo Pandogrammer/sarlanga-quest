@@ -1,25 +1,20 @@
 package pando.creatures.races
 
-import io.reactivex.Observable
 import pando.creatures.*
-import pando.domain.Death
+import pando.creatures.cards.SkeletonCard
 import pando.domain.Events
-import pando.domain.Rest
-
-class Skeleton(events: Events, position: Position, team: Int) : Creature(SkeletonStats(), position, team) {
-    override val behaviour = SkeletonBehaviour(this, events)
-}
 
 class SkeletonStats : CreatureStats(6, 2, 0, 1, 4, 1)
 
-class SkeletonBehaviour(override val creature: Creature, override val events: Events) : CreatureBehaviour {
-    init {
-        val resurrection = events.deaths.filter { it.creature == creature }.subscribe{
-            creature.fatigue = 7
-            events.rest.takeUntil{ creature.fatigue == 0 }.subscribe {
-                creature.fatigue -= 1
-                if (creature.fatigue == 0){
-                    creature.damageCounters = 0
+class SkeletonBehaviour : CreatureBehaviour {
+    override fun attachTo(spawnedCreature: SpawnedCreature, events: Events) {
+
+        val resurrection = events.deaths.filter { it.spawnedCreature == spawnedCreature }.subscribe{
+            spawnedCreature.fatigue = 7
+            events.rest.takeUntil{ spawnedCreature.fatigue == 0 }.subscribe {
+                spawnedCreature.fatigue -= 1
+                if (spawnedCreature.fatigue == 0){
+                    spawnedCreature.damageCounters = 0
                 }
             }
         }

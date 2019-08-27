@@ -26,7 +26,7 @@ class GolemTest {
         whenever(events.damageEvent).thenReturn(damageEvents)
         val golem = CreatureBuilder().health(6).build()
         val attacker = CreatureBuilder().attack(3).build()
-        val golemBehaviour = GolemBehaviour(golem, events)
+        val golemBehaviour = GolemBehaviour().attachTo(golem, events)
         val action = Attack()
         val actionDie: ActionDie = mock()
         whenever(actionDie.roll()).thenReturn(9)
@@ -47,7 +47,7 @@ class GolemTest {
         whenever(events.rest).thenReturn(rest)
         whenever(events.damageEvent).thenReturn(damageEvents)
         val golem = CreatureBuilder().speed(1).build()
-        val golemBehaviour = GolemBehaviour(golem, events)
+        val golemBehaviour = GolemBehaviour().attachTo(golem, events)
 
         golem.removeTokens(Token.GOLEM, 1)
         golem.fatigue = 2

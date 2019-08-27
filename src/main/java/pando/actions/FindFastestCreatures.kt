@@ -1,12 +1,12 @@
 package pando.actions
 
-import pando.creatures.Creature
+import pando.creatures.SpawnedCreature
 
 class FindFastestCreatures {
 
-    fun execute(creatures: List<Creature>): List<Creature> {
-        val maxSpeed = creatures.maxBy { it.stats.speed }!!.stats.speed
-        return creatures.filter { it.stats.speed == maxSpeed }
+    fun execute(spawnedCreatures: List<SpawnedCreature>): List<SpawnedCreature> {
+        val maxSpeed = spawnedCreatures.maxBy { it.stats.speed }!!.stats.speed
+        return spawnedCreatures.filter { it.stats.speed == maxSpeed }
     }
 
 }

@@ -1,33 +1,31 @@
 package pando.creatures.races
 
 import pando.creatures.*
+import pando.creatures.cards.GolemCard
 import pando.domain.Events
 
 
-class Golem(events: Events, position: Position, team: Int) : Creature(GolemStats(), position, team) {
-    override val behaviour = GolemBehaviour(this, events)
-}
-
 class GolemStats : CreatureStats(8, 2, 1, 1, 4, 1)
 
-class GolemBehaviour(override val creature: Creature, override val events: Events) : CreatureBehaviour {
+class GolemBehaviour: CreatureBehaviour {
     private val tokenType = Token.GOLEM
 
-    init {
-        val shieldRegeneration = events.rest.subscribe{ if(creature.fatigue == 0) addShield() }
+    private fun addShield(spawnedCreature: SpawnedCreature) = spawnedCreature.addTokens(tokenType, 1)
+
+    override fun attachTo(spawnedCreature: SpawnedCreature, events: Events) {
+        val shieldRegeneration = events.rest.subscribe{ if(spawnedCreature.fatigue == 0) addShield(spawnedCreature) }
 
         //polemico, porque en realidad es mas una regen que un bloqueo de daño,
         //hay un frame donde el golem puede estar muerto
-        val shieldBlock = events.damageEvent.filter{ it.target == creature }.subscribe{
-            creature.getTokens(tokenType)?.let {
-                creature.damageCounters -= it
-                creature.removeTokens(tokenType, it)
+        val shieldBlock = events.damageEvent.filter{ it.target == spawnedCreature }.subscribe{
+            spawnedCreature.getTokens(tokenType)?.let {
+                spawnedCreature.damageCounters -= it
+                spawnedCreature.removeTokens(tokenType, it)
             }
         }
 
-        addShield()
+        addShield(spawnedCreature)
     }
 
-    private fun addShield() = creature.addTokens(tokenType, 1)
 }
 

@@ -4,7 +4,7 @@ import pando.creatures.CreatureCode.*
 import pando.creatures.cards.*
 
 enum class CreatureCode {
-    EYE, SKELETON;
+    EYE, SKELETON, FROG, FLUFFY, GOLEM;
 }
 
 class CreatureCodeMapper {
@@ -13,6 +13,9 @@ class CreatureCodeMapper {
         return when(creatureCode){
             EYE -> EyeCard()
             SKELETON -> SkeletonCard()
+            FLUFFY -> FluffyCard()
+            GOLEM -> GolemCard()
+            FROG -> FrogCard()
         }
     }
 }

@@ -18,7 +18,7 @@ class EyeTest {
         val kills = PublishSubject.create<Kill>()
         whenever(events.kills).thenReturn(kills)
         val creature = CreatureBuilder().build()
-        val eyeBehaviour = EyeBehaviour(creature, events)
+        val eyeBehaviour = EyeBehaviour().attachTo(creature, events)
         val initialAttack = creature.attack()
 
         kills.onNext(Kill(creature))

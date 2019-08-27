@@ -1,11 +1,11 @@
 package pando.effects
 
-import pando.creatures.Creature
+import pando.creatures.SpawnedCreature
 
 class Damage(val value: Int) {
 
-    fun applyOn(creature: Creature) {
-        creature.damageCounters =+ value
+    fun applyOn(spawnedCreature: SpawnedCreature) {
+        spawnedCreature.damageCounters =+ value
     }
 
 }

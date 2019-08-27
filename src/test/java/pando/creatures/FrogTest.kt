@@ -23,7 +23,7 @@ class FrogTest {
         whenever(events.damageEvent).thenReturn(damage)
         val frog = CreatureBuilder().build()
         val anotherCreature = CreatureBuilder().build()
-        val frogBehaviour = FrogBehaviour(frog, events)
+        val frogBehaviour = FrogBehaviour().attachTo(frog, events)
         val action : Action = mock()
         whenever(action.melee).thenReturn(true)
 
@@ -38,7 +38,7 @@ class FrogTest {
         val damage = PublishSubject.create<DamageEvent>()
         whenever(events.damageEvent).thenReturn(damage)
         val frog = CreatureBuilder().build()
-        val frogBehaviour = FrogBehaviour(frog, events)
+        val frogBehaviour = FrogBehaviour().attachTo(frog, events)
         val anotherCreature = CreatureBuilder().health(4).build()
         anotherCreature.addTokens(Token.FROG, 2)
 

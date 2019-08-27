@@ -10,6 +10,7 @@ class CreatureBuilder{
     private var dexterity: Int = 0
     private var essence: Int = 0
 
+    private var id: Int = 0
     private var team: Int = 0
     private var position: Position = Position(1, 1)
 
@@ -53,15 +54,15 @@ class CreatureBuilder{
         return this
     }
 
-    fun build() = TestCreature(
-            CreatureStats(health, attack, defense, speed, dexterity, essence),
+    fun build() = SpawnedCreature(
+            id,
             position,
-            team
+            team,
+            CreatureStats(health, attack, defense, speed, dexterity, essence),
+            null, null
     )
 
 }
 
-class TestCreature(stats: CreatureStats, position: Position, team: Int) : Creature(stats, position, team) {
-    override val behaviour: CreatureBehaviour? = null
-}
+
 

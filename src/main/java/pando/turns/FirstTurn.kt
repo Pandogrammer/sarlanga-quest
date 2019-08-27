@@ -1,35 +1,35 @@
 package pando.turns
 
 import pando.actions.FindFastestCreatures
-import pando.creatures.Creature
+import pando.creatures.SpawnedCreature
 import kotlin.random.Random
 
 class FirstTurn {
 
-    fun execute(creatures: List<Creature>): Creature {
-        val fastestCreatures = FindFastestCreatures().execute(creatures)
-        var teamCreatures : List<Creature>
+    fun execute(spawnedCreatures: List<SpawnedCreature>): SpawnedCreature {
+        val fastestCreatures = FindFastestCreatures().execute(spawnedCreatures)
+        var teamSpawnedCreatures : List<SpawnedCreature>
 
         if (bothTeamHasCreatures(fastestCreatures)) {
-            teamCreatures = selectCreaturesFromARandomTeam(fastestCreatures)
-        } else teamCreatures = fastestCreatures
+            teamSpawnedCreatures = selectCreaturesFromARandomTeam(fastestCreatures)
+        } else teamSpawnedCreatures = fastestCreatures
 
-        return selectFirstCreatureByPosition(teamCreatures)
+        return selectFirstCreatureByPosition(teamSpawnedCreatures)
     }
 
-    private fun selectFirstCreatureByPosition(fastestCreatures: List<Creature>) =
-            fastestCreatures.sortedBy { it.position }[0]
+    private fun selectFirstCreatureByPosition(fastestSpawnedCreatures: List<SpawnedCreature>) =
+            fastestSpawnedCreatures.sortedBy { it.position }[0]
 
-    private fun selectCreaturesFromARandomTeam(creatures: List<Creature>): List<Creature> {
+    private fun selectCreaturesFromARandomTeam(spawnedCreatures: List<SpawnedCreature>): List<SpawnedCreature> {
         val team = Random.nextInt(1, 3)
-        return selectCreaturesFromTeam(creatures, team)
+        return selectCreaturesFromTeam(spawnedCreatures, team)
     }
 
-    private fun selectCreaturesFromTeam(creatures: List<Creature>, team: Int) =
-            creatures.filter { it.team == team }
+    private fun selectCreaturesFromTeam(spawnedCreatures: List<SpawnedCreature>, team: Int) =
+            spawnedCreatures.filter { it.team == team }
 
 
-    private fun bothTeamHasCreatures(fastestCreatures: List<Creature>): Boolean {
-        return fastestCreatures.map { it.team }.distinct().count() > 1
+    private fun bothTeamHasCreatures(fastestSpawnedCreatures: List<SpawnedCreature>): Boolean {
+        return fastestSpawnedCreatures.map { it.team }.distinct().count() > 1
     }
 }

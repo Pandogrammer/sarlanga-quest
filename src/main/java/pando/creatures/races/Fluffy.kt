@@ -1,24 +1,20 @@
 package pando.creatures.races
 
 import pando.creatures.*
+import pando.creatures.cards.FluffyCard
 import pando.domain.Events
-
-
-class Fluffy(events: Events, position: Position, team: Int) : Creature(FluffyStats(), position, team) {
-    override val behaviour = FluffyBehaviour(this, events)
-}
 
 class FluffyStats: CreatureStats(6, 3, 0, 1, 4, 1)
 
-class FluffyBehaviour(override val creature: Creature, override val events: Events) : CreatureBehaviour {
+class FluffyBehaviour : CreatureBehaviour {
     var killCounter = 0
 
-    init{
-        val healing = events.kills.filter { it.killer == creature }.subscribe {
+    override fun attachTo(spawnedCreature: SpawnedCreature, events: Events) {
+        val healing = events.kills.filter { it.killer == spawnedCreature }.subscribe {
             killCounter++
-            creature.damageCounters -= killCounter
+            spawnedCreature.damageCounters -= killCounter
 
-            if(creature.damageCounters < 0 ) creature.damageCounters = 0
+            if(spawnedCreature.damageCounters < 0 ) spawnedCreature.damageCounters = 0
         }
     }
 }

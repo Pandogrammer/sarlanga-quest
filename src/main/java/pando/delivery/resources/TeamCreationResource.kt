@@ -32,7 +32,7 @@ class TeamCreationResource(private val cards: CreatureCards,
             addCreature(team, it.position, it.creatureCode)?.let { response -> throw RuntimeException(response.message) }
         }
 
-        var matchId = matchsService.create(team.creatures.map { it.key to it.value.creatureCode }.toMap())
+        var matchId = matchsService.create(team.creatures.map { it.key to it.value }.toMap())
         return TeamConfirmationResponse(matchId)
     }
 

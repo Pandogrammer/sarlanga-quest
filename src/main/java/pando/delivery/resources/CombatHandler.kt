@@ -7,8 +7,8 @@ import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import org.springframework.web.socket.handler.TextWebSocketHandler
 import pando.actions.Attack
-import pando.creatures.Creature
 import pando.creatures.Position
+import pando.creatures.cards.CreatureCard
 import pando.domain.MatchsService
 import java.util.*
 
@@ -50,7 +50,13 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
 
     private fun connection() {
         requests.filter { it.request.method == SarlangaMethod.CONNECTION }.subscribe { message ->
-
+            println("enviando criaturas")
+            val match = matchs.get(message.request.attributes!!["matchId"] as Int)
+            match?.let {
+                send(message.session, ConnectionResponse(it.spawnedCreatures.map {
+                    CreatureSpawn(it.id, it.position, it.team, it.card!!)
+                }))
+            }
         }
     }
 
@@ -70,8 +76,13 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
 
     private fun sendStatus() {
         requests.filter { it.request.method == SarlangaMethod.STATUS }.subscribe { message ->
+            println("enviando estado")
             val match = matchs.get(message.request.attributes!!["matchId"] as Int)
-            match?.let { send(message.session, StatusResponse(it.creatures.map { CreatureStatus(it) })) }
+            match?.let {
+                send(message.session, StatusResponse(it.spawnedCreatures.map {
+                    CreatureStatus(it.id, it.health(), it.fatigue)
+                }))
+            }
         }
     }
 
@@ -115,15 +126,13 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
 
 }
 
-class CreatureStatus(creature: Creature) {
-    val team: Int = creature.team
-    val position: Position = creature.position
-    val health: Int = creature.health()
-    val fatigue: Int = creature.fatigue
-    val speed: Int = creature.stats.speed
-}
+class CreatureSpawn(val id: Int, val position: Position, val team: Int, val card: CreatureCard)
+
+class CreatureStatus(val id: Int, val health: Int, val fatigue: Int)
 
 data class NewSessionResponse(val sessionId: String)
+
+data class ConnectionResponse(val creatures: List<CreatureSpawn>)
 
 data class StatusResponse(val creatures: List<CreatureStatus>)
 

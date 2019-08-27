@@ -1,5 +1,4 @@
 import pando.actions.FindFastestCreatures
-import pando.creatures.Creature
 import org.junit.Test
 import pando.test.CreatureBuilder
 import kotlin.test.assertFalse

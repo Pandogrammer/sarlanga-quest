@@ -1,5 +1,4 @@
 import pando.actions.Attack
-import pando.creatures.Creature
 import org.junit.Assert
 import org.junit.Test
 import pando.test.CreatureBuilder

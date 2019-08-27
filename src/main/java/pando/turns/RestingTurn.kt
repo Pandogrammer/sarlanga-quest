@@ -1,22 +1,22 @@
 package pando.turns
 
 import io.reactivex.subjects.PublishSubject
-import pando.creatures.Creature
+import pando.creatures.SpawnedCreature
 import pando.domain.Rest
 
 class RestingTurn {
 
     val executed = PublishSubject.create<Rest>()
 
-    fun execute(creatures: List<Creature>) {
-        creatures.forEach { restIfAlive(it) }
+    fun execute(spawnedCreatures: List<SpawnedCreature>) {
+        spawnedCreatures.forEach { restIfAlive(it) }
         executed.onNext(Rest())
     }
 
-    private fun restIfAlive(creature: Creature) {
-        if (creature.health() > 0) {
-            creature.fatigue -= creature.stats.speed
-            if (creature.fatigue < 0) creature.fatigue = 0
+    private fun restIfAlive(spawnedCreature: SpawnedCreature) {
+        if (spawnedCreature.health() > 0) {
+            spawnedCreature.fatigue -= spawnedCreature.stats.speed
+            if (spawnedCreature.fatigue < 0) spawnedCreature.fatigue = 0
         }
     }
 

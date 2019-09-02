@@ -1,11 +1,8 @@
 package pando.delivery
 
-import pando.domain.InMemoryMatchs
-import pando.domain.MatchsService
-import pando.domain.Matchs
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import pando.domain.CreatureCards
+import pando.domain.*
 import springfox.documentation.builders.PathSelectors
 import springfox.documentation.builders.RequestHandlerSelectors
 import springfox.documentation.spi.DocumentationType
@@ -19,6 +16,11 @@ class Context {
     @Bean
     fun matchsService(matchs: Matchs): MatchsService {
         return MatchsService(matchs)
+    }
+
+    @Bean
+    fun accountService(): AccountService {
+        return AccountService()
     }
 
     // Repositories

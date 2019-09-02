@@ -22,7 +22,10 @@ class TeamCreationResource(private val cards: CreatureCards,
     }
 
     @PostMapping
-    fun confirmTeam(@RequestBody request: TeamRequest): TeamConfirmationResponse {
+    fun confirmTeam(@RequestHeader("Account-Id") accountId: String,
+                    @RequestBody request: TeamRequest): TeamConfirmationResponse {
+        println("AccountId: $accountId")
+
         if(request.creatures.isEmpty())
             throw RuntimeException("El equipo esta vacío.")
 

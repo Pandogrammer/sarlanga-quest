@@ -1,5 +1,6 @@
 package pando.delivery.resources
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.reactivex.subjects.PublishSubject
 import org.springframework.web.socket.CloseStatus
@@ -9,6 +10,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 import pando.actions.Attack
 import pando.creatures.Position
 import pando.creatures.cards.CreatureCard
+import pando.delivery.resources.SarlangaMethod.*
+import pando.domain.Match
 import pando.domain.MatchsService
 import java.util.*
 
@@ -20,23 +23,24 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
 
 
     //estos tres deberia pasarlos a otro lado, ya que el otro socket tambien los usa
-    private val session_websocketsession = HashMap<String, WebSocketSession>()
     private val session_account = HashMap<String, String>()
     private val account_session = HashMap<String, String>()
-    private val account_team = HashMap<String, Int>()
 
     init {
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
         connection()
+        cards()
         reconnection()
         sendStatus()
         actionExecution()
     }
 
     private fun reconnection() {
-        requests.filter { it.request.method == SarlangaMethod.RECONNECTION }.subscribe { message ->
-
-            val newSessionId = message.session.id
-            val oldSessionId = message.request.attributes!!["oldSessionId"] as String
+        requests.filter { it.method == RECONNECTION }.subscribe { request ->
+            val reconnectionRequest = mapper.readerFor(ReconnectionRequest::class.java).readValue<ReconnectionRequest>(request.message)
+            val newSessionId = request.session.id
+            val oldSessionId = reconnectionRequest.oldSessionId
 
             session_account[oldSessionId]?.let { accountId ->
                 session_account[newSessionId] = accountId
@@ -47,13 +51,22 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
         }
     }
 
-
     private fun connection() {
-        requests.filter { it.request.method == SarlangaMethod.CONNECTION }.subscribe { message ->
-            println("enviando criaturas")
-            val match = matchs.get(message.request.attributes!!["matchId"] as Int)
+        requests.filter { it.method == CONNECTION }.subscribe { request ->
+            val sessionRequest = mapper.readerFor(ConnectionRequest::class.java).readValue<ConnectionRequest>(request.message)
+            val sessionId = request.session.id
+            val accountId = sessionRequest.accountId
+            session_account[sessionId] = accountId
+        }
+    }
+
+
+    private fun cards() {
+        requests.filter { it.method == CARDS }.subscribe { message ->
+            println("Enviando criaturas")
+            val match = retrieveMatchFromSessionId(message.session.id)
             match?.let {
-                send(message.session, ConnectionResponse(it.spawnedCreatures.map {
+                send(message.session, CardsResponse(it.spawnedCreatures.map {
                     CreatureSpawn(it.id, it.position, it.team, it.card!!)
                 }))
             }
@@ -61,9 +74,10 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
     }
 
     private fun actionExecution() {
-        requests.filter { it.request.method == SarlangaMethod.ACTION }.subscribe { message ->
-            val match = matchs.get(message.request.attributes!!["matchId"] as Int)
-            val objectiveId = message.request.attributes!!["objectiveId"] as Int
+        requests.filter{ it.method == ACTION }.subscribe { request ->
+            val actionRequest = mapper.readerFor(ActionExecutionRequest::class.java).readValue<ActionExecutionRequest>(request.message)
+            val match = retrieveMatchFromSessionId(request.session.id)
+            val objectiveId = actionRequest.objectiveId
 
             match?.let {
                 val action = Attack()
@@ -75,15 +89,23 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
     }
 
     private fun sendStatus() {
-        requests.filter { it.request.method == SarlangaMethod.STATUS }.subscribe { message ->
-            println("enviando estado")
-            val match = matchs.get(message.request.attributes!!["matchId"] as Int)
+        requests.filter { it.method == STATUS }.subscribe { request ->
+            println("Enviando estado")
+            val match = retrieveMatchFromSessionId(request.session.id)
             match?.let {
-                send(message.session, StatusResponse(it.spawnedCreatures.map {
+                send(request.session, StatusResponse(it.spawnedCreatures.map {
                     CreatureStatus(it.id, it.health(), it.fatigue)
                 }))
             }
         }
+    }
+
+    private fun retrieveMatchFromSessionId(sessionId: String): Match? {
+        session_account[sessionId]?.let { accountId ->
+            return matchs.get(accountId)
+        }
+        println("Match no encontrado")
+        return null
     }
 
     private fun send(session: WebSocketSession, message: Any) {
@@ -104,7 +126,7 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
         try {
             println("Recibiste: ${message.payload}")
             val request = mapper.readerFor(SarlangaRequest::class.java).readValue<SarlangaRequest>(message.payload)
-            requests.onNext(SessionMessage(session, request))
+            requests.onNext(SessionMessage(session, request.method, message.payload))
         } catch (e: Exception) {
             e.printStackTrace()
             println(message.payload)
@@ -126,21 +148,27 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
 
 }
 
+
 class CreatureSpawn(val id: Int, val position: Position, val team: Int, val card: CreatureCard)
 
 class CreatureStatus(val id: Int, val health: Int, val fatigue: Int)
 
-data class NewSessionResponse(val sessionId: String)
+data class NewSessionResponse(val sessionId: String) : SarlangaRequest(SESSION)
 
-data class ConnectionResponse(val creatures: List<CreatureSpawn>)
+data class CardsResponse(val creatures: List<CreatureSpawn>) : SarlangaRequest(CARDS)
 
 data class StatusResponse(val creatures: List<CreatureStatus>)
 
-data class SessionMessage(val session: WebSocketSession, val request: SarlangaRequest)
+data class SessionMessage(val session: WebSocketSession, val method: SarlangaMethod, val message: String)
 
-data class SarlangaRequest(val method: SarlangaMethod, val attributes: Map<String, Any>?) //caca
+open class SarlangaRequest(val method: SarlangaMethod)
 
 enum class SarlangaMethod {
-    STATUS, ACTION, CONNECTION, RECONNECTION
+    STATUS, ACTION, CONNECTION, RECONNECTION, CARDS, SESSION
 }
 
+data class ActionExecutionRequest(val objectiveId: Int)
+
+data class ConnectionRequest(val accountId: String)
+
+data class ReconnectionRequest(val oldSessionId: String)

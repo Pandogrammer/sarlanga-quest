@@ -94,7 +94,7 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
             val match = retrieveMatchFromSessionId(request.session.id)
             match?.let {
                 send(request.session, StatusResponse(it.spawnedCreatures.map {
-                    CreatureStatus(it.id, it.health(), it.fatigue)
+                    CreatureStatus(it.id, it.damageCounters, it.fatigue)
                 }))
             }
         }
@@ -151,7 +151,7 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
 
 class CreatureSpawn(val id: Int, val position: Position, val team: Int, val card: CreatureCard)
 
-class CreatureStatus(val id: Int, val health: Int, val fatigue: Int)
+class CreatureStatus(val id: Int, val damage: Int, val fatigue: Int)
 
 data class NewSessionResponse(val sessionId: String) : SarlangaRequest(SESSION)
 

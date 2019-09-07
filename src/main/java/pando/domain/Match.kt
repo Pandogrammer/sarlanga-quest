@@ -47,8 +47,8 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
         val creatures = ArrayList<SpawnedCreature>()
         var id = 0
         playerCreatures.forEach{
-            val behaviour = getBehaviour(it.value.creatureCode)
-            val stats = getStats(it.value.creatureCode)
+            val behaviour = getBehaviour(it.value.code)
+            val stats = getStats(it.value.code)
             val spawned = SpawnedCreature(id, it.key, 1, stats, behaviour, it.value)
             behaviour.attachTo(spawned, events)
             creatures.add(spawned)
@@ -56,8 +56,8 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
         }
 
         opponentCreatures.forEach{
-            val behaviour = getBehaviour(it.value.creatureCode)
-            val stats = getStats(it.value.creatureCode)
+            val behaviour = getBehaviour(it.value.code)
+            val stats = getStats(it.value.code)
             val spawned = SpawnedCreature(id, it.key, 2, stats, behaviour, it.value)
             behaviour.attachTo(spawned, events)
             creatures.add(spawned)

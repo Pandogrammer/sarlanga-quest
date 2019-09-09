@@ -11,7 +11,7 @@ import pando.domain.DamageEvent
 import pando.domain.Events
 import pando.domain.Rest
 import pando.test.CreatureBuilder
-import pando.turns.CreatureAction
+import pando.turns.ExecuteAction
 import pando.turns.RestingTurn
 import kotlin.test.assertEquals
 
@@ -32,7 +32,7 @@ class GolemTest {
         whenever(actionDie.roll()).thenReturn(9)
         val initialHealth = golem.health()
 
-        CreatureAction(actionDie).execute(attacker, action, golem)
+        ExecuteAction(actionDie).execute(attacker, action, golem)
         damageEvents.onNext(DamageEvent(attacker, action, golem))
 
         assertEquals(initialHealth - (attacker.attack() - 1), golem.health())

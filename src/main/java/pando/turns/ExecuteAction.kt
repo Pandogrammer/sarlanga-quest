@@ -6,7 +6,7 @@ import pando.creatures.SpawnedCreature
 import io.reactivex.subjects.PublishSubject
 import pando.domain.ActionExecution
 
-class CreatureAction(private val die: ActionDie) {
+class ExecuteAction(private val die: ActionDie) {
     val executed = PublishSubject.create<ActionExecution>()
 
     fun execute(spawnedCreature: SpawnedCreature, action: Action, target: SpawnedCreature) {

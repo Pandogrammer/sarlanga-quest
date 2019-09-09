@@ -21,7 +21,7 @@ class NextTurnTest {
         val action = TestAction(fatigue = 3)
 
         val firstTurnCreature = FirstTurn().execute(creatures)
-        val creatureAction = CreatureAction(actionDie).execute(firstTurnCreature, action, a)
+        val creatureAction = ExecuteAction(actionDie).execute(firstTurnCreature, action, a)
         val nextTurnCreature = nextTurn.execute(creatures, firstTurnCreature.team)
 
         assertEquals(b, nextTurnCreature)
@@ -38,7 +38,7 @@ class NextTurnTest {
         val action = TestAction(fatigue = 3)
 
         val firstTurnCreature = FirstTurn().execute(creatures)
-        val creatureAction = CreatureAction(actionDie).execute(firstTurnCreature, action, a)
+        val creatureAction = ExecuteAction(actionDie).execute(firstTurnCreature, action, a)
         val nextTurnCreature = nextTurn.execute(creatures, firstTurnCreature.team)
 
         assertEquals(c, nextTurnCreature)
@@ -52,7 +52,7 @@ class NextTurnTest {
         val action = TestAction(fatigue = 3)
 
         val firstTurnCreature = FirstTurn().execute(creatures)
-        val creatureAction = CreatureAction(actionDie).execute(firstTurnCreature, action, a)
+        val creatureAction = ExecuteAction(actionDie).execute(firstTurnCreature, action, a)
         val nextTurnCreature = nextTurn.execute(creatures, firstTurnCreature.team)
 
         assertNull(nextTurnCreature)

@@ -16,7 +16,7 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
             opponentCreatures: Map<Position, CreatureCard>,
             actionDie: ActionDie = ActionDie()) {
 
-    private val creatureAction = CreatureAction(actionDie)
+    private val creatureAction = ExecuteAction(actionDie)
     private val restingTurn = RestingTurn()
     private val nextTurn = NextTurn()
     private val winnerValidation = WinnerValidation()

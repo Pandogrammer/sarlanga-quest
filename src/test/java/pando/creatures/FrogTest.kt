@@ -5,13 +5,11 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 import pando.actions.Action
-import pando.actions.ActionDie
 import pando.actions.Attack
 import pando.creatures.races.FrogBehaviour
 import pando.domain.DamageEvent
 import pando.domain.Events
 import pando.test.CreatureBuilder
-import pando.turns.CreatureAction
 import kotlin.test.assertEquals
 
 class FrogTest {

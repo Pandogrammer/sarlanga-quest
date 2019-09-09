@@ -13,7 +13,7 @@ class CreatureActionTest {
 
     @Test
     fun `given creature actions, it gains fatigue`(){
-        val creatureAction = CreatureAction(random)
+        val creatureAction = ExecuteAction(random)
         val action = TestAction(fatigue = 3)
         val creature = CreatureBuilder().dexterity(3).build()
         val target = CreatureBuilder().dexterity(3).build()

@@ -17,7 +17,7 @@ class RestingTurnTest {
         val creature = CreatureBuilder().speed(2).dexterity(3).build()
         val action = TestAction(fatigue = 3)
 
-        CreatureAction(actionDie).execute(creature, action, creature)
+        ExecuteAction(actionDie).execute(creature, action, creature)
         restingTurn.execute(listOf(creature))
 
         assertEquals(1, creature.fatigue)
@@ -29,7 +29,7 @@ class RestingTurnTest {
         val creature = CreatureBuilder().speed(2).dexterity(3).health(0).build()
         val action = TestAction(fatigue = 3)
 
-        CreatureAction(actionDie).execute(creature, action, creature)
+        ExecuteAction(actionDie).execute(creature, action, creature)
         restingTurn.execute(listOf(creature))
 
         assertEquals(3, creature.fatigue)

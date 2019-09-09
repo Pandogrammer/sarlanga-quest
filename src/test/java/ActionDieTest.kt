@@ -4,7 +4,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Test
 import pando.test.CreatureBuilder
-import pando.turns.CreatureAction
+import pando.turns.ExecuteAction
 import kotlin.test.assertEquals
 
 class ActionDieTest {
@@ -16,7 +16,7 @@ class ActionDieTest {
         val a = CreatureBuilder().dexterity(3).attack(2).build()
         val b = CreatureBuilder().health(4).build()
 
-        CreatureAction(actionDie).execute(a, Attack(), b)
+        ExecuteAction(actionDie).execute(a, Attack(), b)
 
         assertEquals(1, a.fatigue)
         assertEquals(2, b.health())
@@ -30,7 +30,7 @@ class ActionDieTest {
         val a = CreatureBuilder().dexterity(3).attack(2).build()
         val b = CreatureBuilder().health(4).build()
 
-        CreatureAction(actionDie).execute(a, Attack(), b)
+        ExecuteAction(actionDie).execute(a, Attack(), b)
 
         assertEquals(1, a.fatigue)
         assertEquals(4, b.health())
@@ -44,7 +44,7 @@ class ActionDieTest {
         val a = CreatureBuilder().dexterity(3).attack(2).build()
         val b = CreatureBuilder().health(4).build()
 
-        CreatureAction(actionDie).execute(a, Attack(), b)
+        ExecuteAction(actionDie).execute(a, Attack(), b)
 
         assertEquals(1, a.fatigue)
         assertEquals(0, b.health())
@@ -58,7 +58,7 @@ class ActionDieTest {
         val a = CreatureBuilder().dexterity(3).attack(2).build()
         val b = CreatureBuilder().health(4).build()
 
-        CreatureAction(actionDie).execute(a, Attack(), b)
+        ExecuteAction(actionDie).execute(a, Attack(), b)
 
         assertEquals(3, a.fatigue)
         assertEquals(4, b.health())

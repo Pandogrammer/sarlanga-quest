@@ -1,5 +1,5 @@
 package pando.creatures
 
 enum class CreatureCardAction {
-    NORMAL_ATTACK
+    NORMAL_ATTACK, SLOW_ATTACK
 }

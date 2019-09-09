@@ -1,5 +1,6 @@
 package pando.domain
 
+import io.reactivex.subjects.PublishSubject
 import pando.creatures.Position
 import pando.creatures.cards.CreatureCard
 import pando.creatures.cards.EyeCard
@@ -7,9 +8,7 @@ import pando.creatures.cards.SkeletonCard
 import java.util.*
 
 class MatchsService(private val matchs: Matchs) {
-
-    //caca
-    private val account_match = HashMap<String, Int>()
+    val matchCreated = PublishSubject.create<MatchCreation>()
 
     private val iaCreatures = {
         mapOf(Position(1, 1) to EyeCard(),
@@ -19,9 +18,9 @@ class MatchsService(private val matchs: Matchs) {
 
     fun create(playerCreatures: Map<Position, CreatureCard>, accountId: String): Int {
         val match = Match(playerCreatures, iaCreatures())
-        match.start()
         val matchId = matchs.add(match)
-        account_match[accountId] = matchId
+        matchCreated.onNext(MatchCreation(matchId, accountId))
+        match.start()
         return matchId
     }
 
@@ -29,12 +28,6 @@ class MatchsService(private val matchs: Matchs) {
         return matchs.find(matchId)
     }
 
-    fun get(accountId: String): Match?{
-        account_match[accountId]?.let{ return matchs.find(it) }
-        return null
-    }
-
-    fun isInMatch(accountId: String): Boolean {
-        return account_match.containsKey(accountId)
-    }
 }
+
+class MatchCreation(val matchId: Int, val accountId: String)

@@ -9,10 +9,6 @@ class SpawnedCreature(val id: Int,
                       val behaviour: CreatureBehaviour?,
                       val card: CreatureCard?/*caca*/) {
 
-    override fun toString(): String {
-        return "[T$team]${javaClass.simpleName}[${position.column}-${position.line}]"
-    }
-
     var fatigue: Int = 0
     var damageCounters: Int = 0
     var attackBonus: Int = 0

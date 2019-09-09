@@ -27,14 +27,17 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
     private val kills = actionsExecuted.filter { it.target.health() == 0 }.map { Kill(it.actor) }
     private val deaths = actionsExecuted.filter { it.target.health() == 0 }.map { Death(it.target) }
 
-    val messages = PublishSubject.create<String>()
+    private val matchEnd = PublishSubject.create<MatchEnd>()
+    private val activeCreature = PublishSubject.create<ActiveCreature>()
 
     val events = MatchEvents(
             actionsExecuted,
             rests,
             damage,
             kills,
-            deaths
+            deaths,
+            matchEnd,
+            activeCreature
     )
 
     var activeSpawnedCreature: SpawnedCreature? = null
@@ -46,7 +49,7 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
                                opponentCreatures: Map<Position, CreatureCard>): List<SpawnedCreature> {
         val creatures = ArrayList<SpawnedCreature>()
         var id = 0
-        playerCreatures.forEach{
+        playerCreatures.forEach {
             val behaviour = getBehaviour(it.value.code)
             val stats = getStats(it.value.code)
             val spawned = SpawnedCreature(id, it.key, 1, stats, behaviour, it.value)
@@ -55,7 +58,7 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
             id++
         }
 
-        opponentCreatures.forEach{
+        opponentCreatures.forEach {
             val behaviour = getBehaviour(it.value.code)
             val stats = getStats(it.value.code)
             val spawned = SpawnedCreature(id, it.key, 2, stats, behaviour, it.value)
@@ -68,15 +71,13 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
     }
 
     fun start() {
-        messagesSubscriptions()
-        messages.onNext("Match started.")
         activeSpawnedCreature = FirstTurn().execute(spawnedCreatures)
 
         messageActiveCreature()
-        iaTurn()
+        playIaTurn()
     }
 
-    private fun iaTurn() {
+    private fun playIaTurn() {
         activeSpawnedCreature?.let {
             if (it.team == 2) {
                 val action = Attack()
@@ -89,16 +90,6 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
                 actionExecution(action, objective)
             }
         }
-    }
-
-    private fun messagesSubscriptions() {
-        messages.subscribe { println(it) }
-
-        actionsExecuted.subscribe { println("${it.actor} executed ${it.action.javaClass.simpleName} on ${it.target}, rolling: ${it.roll}") }
-
-        deaths.subscribe { println("${it.spawnedCreature} died") }
-
-        rests.subscribe { println("Resting turn.") }
     }
 
     fun validate(action: Action, objectiveId: Int): Boolean {
@@ -119,36 +110,29 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
                     activeSpawnedCreature = nextTurn.execute(spawnedCreatures, it.team)
                 }
 
-                messageStatus()
                 messageActiveCreature()
-                iaTurn()
+                playIaTurn()
+            } else {
+                messageWinningTeam()
             }
         }
     }
 
-    private fun messageStatus() {
-        var map = ""
-        val playerCreatures = spawnedCreatures.filter { it.team == 1 }
-        val iaCreatures = spawnedCreatures.filter { it.team == 2 }
-
-        playerCreatures.forEach { map += if (it.health() > 0) "o " else "x " }
-        map += "\n-----------\n"
-        iaCreatures.forEach { map += if (it.health() > 0) "o " else "x " }
-        messages.onNext(map)
+    private fun messageWinningTeam() {
+        matchEnd.onNext(MatchEnd(winner!!))
     }
 
+
     private fun messageActiveCreature() {
-        activeSpawnedCreature?.let { messages.onNext("Active creature: $it") }
+        activeSpawnedCreature?.let { activeCreature.onNext(ActiveCreature(it.id, it.team)) }
     }
 
     private fun thereIsNoWinner(): Boolean {
         winner = winnerValidation.execute(spawnedCreatures) ?: return true
 
         activeSpawnedCreature = null
-        messages.onNext("Team $winner won!")
         return false
     }
-
 
 
     private fun getBehaviour(creature: CreatureCode): CreatureBehaviour {
@@ -173,10 +157,13 @@ class Match(playerCreatures: Map<Position, CreatureCard>,
 
 }
 
+
 //hecho solo para poder mockear. -_-
 class MatchEvents(override val actions: Observable<ActionExecution>,
                   override val rest: Observable<Rest>,
                   override val damageEvent: Observable<DamageEvent>,
                   override val kills: Observable<Kill>,
-                  override val deaths: Observable<Death>) : Events
+                  override val deaths: Observable<Death>,
+                  override val matchEnd: Observable<MatchEnd>,
+                  override val activeCreature: Observable<ActiveCreature>) : Events
 

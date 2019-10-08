@@ -3,17 +3,15 @@ package pando.domain
 import io.reactivex.subjects.PublishSubject
 import pando.creatures.Position
 import pando.creatures.cards.CreatureCard
-import pando.creatures.cards.EyeCard
+import pando.creatures.cards.FluffyCard
 import pando.creatures.cards.SkeletonCard
-import java.util.*
 
 class MatchsService(private val matchs: Matchs) {
     val matchCreated = PublishSubject.create<MatchCreation>()
 
     private val iaCreatures = {
-        mapOf(Position(1, 1) to EyeCard(),
-                Position(2, 1) to SkeletonCard(),
-                Position(2, 2) to EyeCard())
+        mapOf(Position(1, 1) to SkeletonCard(),
+                Position(2, 1) to FluffyCard())
     }
 
     fun create(playerCreatures: Map<Position, CreatureCard>, accountId: String): Int {

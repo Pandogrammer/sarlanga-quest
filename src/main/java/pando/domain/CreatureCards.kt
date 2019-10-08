@@ -1,10 +1,13 @@
 package pando.domain
 
-import pando.creatures.cards.EyeCard
-import pando.creatures.cards.SkeletonCard
+import pando.creatures.cards.*
 
 class CreatureCards {
     val creatures = listOf(
-            EyeCard(), SkeletonCard()
+            EyeCard(),
+            SkeletonCard(),
+            FluffyCard(),
+            FrogCard(),
+            GolemCard()
     )
 }

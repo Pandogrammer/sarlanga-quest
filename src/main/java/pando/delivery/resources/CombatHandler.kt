@@ -38,6 +38,7 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
         cardsMessage()
         statusMessage()
         actionExecutionMessage()
+        activeCreatureMessage()
     }
 
     private fun sendMatchEvents() {
@@ -72,8 +73,7 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
             match.events.activeCreature.subscribe { event ->
                 getSessionFromMatchId(matchId)?.let {
                     val creatureId = event.id
-                    val team = event.team
-                    val message = ActiveCreatureMessage(creatureId, team)
+                    val message = ActiveCreatureMessage(creatureId)
                     send(it, message)
                 }
             }
@@ -147,6 +147,17 @@ class CombatHandler(val matchs: MatchsService) : TextWebSocketHandler() {
                 send(request.session, StatusResponse(it.spawnedCreatures.map {
                     CreatureStatus(it.id, it.damageCounters, it.fatigue)
                 }))
+            }
+        }
+    }
+
+    private fun activeCreatureMessage(){
+        requests.filter { it.method == ACTIVE_CREATURE }.subscribe { request ->
+            val match = retrieveMatchFromSessionId(request.session.id)
+            match?.run {
+                activeSpawnedCreature?.run {
+                    send(request.session, ActiveCreatureMessage(id))
+                }
             }
         }
     }
@@ -228,7 +239,7 @@ data class ActionExecutionMessage(val actorId: Int, val actionId: Int, val targe
 
 data class MatchEndMessage(val team: Int) : SarlangaMessage(MATCH_END)
 
-data class ActiveCreatureMessage(val creatureId: Int, val team: Int) : SarlangaMessage(ACTIVE_CREATURE)
+data class ActiveCreatureMessage(val creatureId: Int) : SarlangaMessage(ACTIVE_CREATURE)
 
 enum class SarlangaMethod {
     STATUS,
